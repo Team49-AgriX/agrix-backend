@@ -1,0 +1,10 @@
+bin/
+obj/
+.user
+
+.env
+appsettings.json
+
+.idea/
+
+*.log
