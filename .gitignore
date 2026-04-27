@@ -4,6 +4,7 @@ obj/
 
 .env
 appsettings.json
+firebase-service-account.json
 
 .idea/
 

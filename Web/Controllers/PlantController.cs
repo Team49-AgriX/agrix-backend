@@ -1,4 +1,5 @@
 ﻿using Domain.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Web.Mapper;
 using Web.Request;
@@ -16,7 +17,9 @@ public class PlantController : ControllerBase
         _plantMapper = plantMapper;
     }
 
+    [Authorize]
     [HttpPost("identify")]
+    [Consumes("multipart/form-data")]
     public async Task<IActionResult> IdentifyAsync([FromQuery] PlantIdentificationQueryRequest request, [FromForm] Organ[] organs,
         [FromForm] IFormFile[] images)
     {

@@ -1,12 +1,11 @@
-﻿using Domain.Dto;
-using Domain.Models.PlantID;
+﻿using Domain.Models.PlantID;
 using Web.Response.Plant_Response;
 
 namespace Web.Extensions;
 
 public static class PlantExtensions
 {
-    public static PlantIdentificationQueryResponse ToPlantIdentificationQueryResponse (this PlantIdentificationDto dto)
+    public static PlantIdentificationQueryResponse ToPlantIdentificationQueryResponse (this PlantIdentificationQuery dto)
     {
         return new PlantIdentificationQueryResponse(
             dto.Project,
@@ -47,21 +46,12 @@ public static class PlantExtensions
             species.ScientificName
         );
     }
-
-    public static ExternalReferenceResponse ToExternalReferenceResponse(this ExternalReference externalReference)
-    {
-        return new ExternalReferenceResponse(
-            externalReference.Id
-        );
-    }
-
+    
     public static PlantResultResponse ToPlantResultResponse(this PlantResult plantResult)
     {
         return new PlantResultResponse(
             plantResult.Score,
-            plantResult.Species.ToSpeciesResponse(),
-            plantResult.Gbif?.ToExternalReferenceResponse(),
-            plantResult.Powo?.ToExternalReferenceResponse()
+            plantResult.Species.ToSpeciesResponse()
             );
     }
 

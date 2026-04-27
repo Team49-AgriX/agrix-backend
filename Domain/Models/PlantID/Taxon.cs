@@ -1,6 +1,8 @@
-﻿namespace Domain.Models.PlantID;
+﻿using Domain.Common;
 
-public class Taxon
+namespace Domain.Models.PlantID;
+
+public class Taxon : BaseEntity
 {
     public string ScientificNameWithoutAuthor { get; set; } = string.Empty;
     public string ScientificNameAuthorship { get; set; } = string.Empty;

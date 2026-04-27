@@ -2,7 +2,5 @@
 
 public record PlantResultResponse(
     double Score,
-    SpeciesResponse Species,
-    ExternalReferenceResponse? Gbif,
-    ExternalReferenceResponse? Powo
+    SpeciesResponse Species
     );

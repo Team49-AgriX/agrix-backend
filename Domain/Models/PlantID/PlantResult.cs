@@ -1,9 +1,9 @@
-﻿namespace Domain.Models.PlantID;
+﻿using Domain.Common;
 
-public class PlantResult
+namespace Domain.Models.PlantID;
+
+public class PlantResult : BaseEntity
 {
     public double Score { get; set; }
     public Species Species { get; set; } = new();
-    public ExternalReference? Gbif { get; set; }
-    public ExternalReference? Powo { get; set; }
 }

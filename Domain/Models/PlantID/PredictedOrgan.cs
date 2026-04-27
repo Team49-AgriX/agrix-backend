@@ -1,6 +1,8 @@
-﻿namespace Domain.Models.PlantID;
+﻿using Domain.Common;
 
-public class PredictedOrgan
+namespace Domain.Models.PlantID;
+
+public class PredictedOrgan : BaseEntity
 {
     public string Image { get; set; } = string.Empty;
     public string FileName { get; set; } = string.Empty;

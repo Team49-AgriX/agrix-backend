@@ -1,6 +1,4 @@
-﻿using Domain.Enums;
-
-namespace Web.Request;
+﻿namespace Web.Request;
 
 public record PlantIdentificationQueryRequest(
     string Project = "all",

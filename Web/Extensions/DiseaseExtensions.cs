@@ -1,12 +1,11 @@
-﻿using Domain.Dto;
-using Domain.Models.DiseaseID;
+﻿using Domain.Models.DiseaseID;
 using Web.Response.Disease_Response;
 
 namespace Web.Extensions;
 
 public static class DiseaseExtensions
 {
-    public static DiseaseIDqueryResponse ToDiseaseIDqueryResponse(this DiseaseIdDto dto)
+    public static DiseaseIDqueryResponse ToDiseaseIDqueryResponse(this DiseaseIDquery dto)
     {
         return new DiseaseIDqueryResponse(
             dto.Images,
@@ -19,8 +18,8 @@ public static class DiseaseExtensions
     public static DiseaseResultResponse ToDiseaseResultResponse(this DiseaseResult diseaseResult)
     {
         return new DiseaseResultResponse(
-            diseaseResult.Name,
-            diseaseResult.Description,
+            diseaseResult.Name ?? "",
+            diseaseResult.Description ?? "",
             diseaseResult.Score
         );
     }
