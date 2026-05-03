@@ -16,7 +16,7 @@ public class DiseaseMapper
         _diseaseService = diseaseService;
     }
     
-    public async Task<DiseaseResponse> IdentifyAsync(IFormFile[] images, Organ[] organs, DiseaseIDqueryRequest request)
+    public async Task<string> IdentifyAsync(IFormFile[] images, Organ[] organs, DiseaseIDqueryRequest request)
     {
         var dto = new DiseaseIdDto()
         {
@@ -28,7 +28,9 @@ public class DiseaseMapper
             Images = [images.ToString()]
         };
 
-        var result = await _diseaseService.IdentifyAsync(images, organs, dto);
-        return result.ToDiseaseResponse();
+        // var result = await _diseaseService.IdentifyAsync(images, organs, dto);
+        // return result.ToDiseaseResponse();
+        
+        return await _diseaseService.IdentifyAsync(images, organs, dto);
     }
 }

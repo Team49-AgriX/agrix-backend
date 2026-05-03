@@ -7,5 +7,6 @@ namespace Service.Interface;
 
 public interface IPlantService
 {
-    Task<Plant> IdentifyAsync(IFormFile[] images, Organ[]organs, PlantIdentificationDto queryDto);
+    Task<string> IdentifyAsync(IFormFile[] images, Organ[]organs, PlantIdentificationDto queryDto);
+    Task<string> GetPlantInfoAsync(Plant plant, CancellationToken cancellationToken);
 }
