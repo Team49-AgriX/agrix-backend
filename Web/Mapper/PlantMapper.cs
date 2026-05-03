@@ -16,7 +16,7 @@ public class PlantMapper
         _plantService = plantService;
     }
 
-    public async Task<PlantResponse> IdentifyAsync(IFormFile[] images, Organ[] organs, PlantIdentificationQueryRequest request)
+    public async Task<string> IdentifyAsync(IFormFile[] images, Organ[] organs, PlantIdentificationQueryRequest request)
     {
         var dto = new PlantIdentificationDto()
         {
@@ -31,7 +31,8 @@ public class PlantMapper
             Images = [images.ToString()]
         };
 
-        var result = await _plantService.IdentifyAsync(images, organs, dto);
-        return result.ToFinalResponse();
+        //var result = await _plantService.IdentifyAsync(images, organs, dto);
+        //return result.ToFinalResponse();
+        return await _plantService.IdentifyAsync(images, organs, dto);
     }
 }

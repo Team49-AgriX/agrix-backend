@@ -1,4 +1,5 @@
 ﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
 using Domain.Dto;
@@ -16,15 +17,18 @@ public class DiseaseService : IDiseaseService
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
     private const string BaseUrl = "https://my-api.plantnet.org/v2";
+    private readonly string _geminiApiKey;
 
     public DiseaseService(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
         _apiKey = configuration["PlantNet:ApiKey"] ??
                   throw new InvalidOperationException("PlantNet API key is not configured.");
+        _geminiApiKey = configuration["Gemini:ApiKey"] ??
+                        throw new InvalidOperationException("Gemini API key is not configured.");
     }
     
-    public async Task<Disease> IdentifyAsync(IFormFile[] images, Organ[] organs, DiseaseIdDto queryDto)
+    public async Task<string> IdentifyAsync(IFormFile[] images, Organ[] organs, DiseaseIdDto queryDto)
     {
         var organList = organs.Length == images.Length 
             ? organs 
@@ -65,6 +69,122 @@ public class DiseaseService : IDiseaseService
             PropertyNameCaseInsensitive = true
         });
 
-        return result ?? throw new InvalidOperationException("Failed to deserialize PlantNet response.");
+        return await GetDiseaseInfoAsync(result);
+    }
+
+    public async Task<string> GetDiseaseInfoAsync(Disease disease, CancellationToken cancellationToken = default)
+    {
+        var topResult = disease?.Results?.FirstOrDefault();
+        if (topResult == null)
+            return "Could not identify disease";
+        
+        var prompt = $"""
+                          A plant disease was identified with the following details:
+                          - Disease name: {topResult.Name}
+                          - Description: {topResult.Description}
+                          - Confidence score: {topResult.Score:P1}
+
+                          Please provide information about this disease covering:
+                          - What is this disease
+                          - What causes it (fungal, bacterial, viral, pest, etc.)
+                          - What are the typical symptoms
+                          - How to treat it
+                          - How to prevent it in the future
+                      """;
+        
+        var requestBody = new
+        {
+            contents = new[]
+            {
+                new { parts = new[] { new { text = prompt } } }
+            }
+        };
+        
+        var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_geminiApiKey}";
+
+        const int maxRetries = 2;
+        int delayMs = 5000;
+        const int maxDelayMs = 30000;
+
+        for (int attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                using var response = await _httpClient.PostAsJsonAsync(url, requestBody, cancellationToken);
+
+                // success
+                if (response.IsSuccessStatusCode)
+                {
+                    await using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+                    using var doc = await JsonDocument.ParseAsync(stream, cancellationToken: cancellationToken);
+
+                    var root = doc.RootElement;
+
+                    if (root.TryGetProperty("candidates", out var candidates) &&
+                        candidates.GetArrayLength() > 0 &&
+                        candidates[0].TryGetProperty("content", out var content) &&
+                        content.TryGetProperty("parts", out var parts) &&
+                        parts.GetArrayLength() > 0)
+                    {
+                        return parts[0].GetProperty("text").GetString() ?? "Empty response from AI.";
+                    }
+
+                    return "Unexpected response format from AI service.";
+                }
+
+                // rate limit handling
+                if ((int)response.StatusCode == 429)
+                {
+                    if (attempt == maxRetries)
+                        break;
+
+                    int waitMs = delayMs;
+
+                    if (response.Headers.TryGetValues("Retry-After", out var values) && int.TryParse(values.FirstOrDefault(), out var retryAfterSeconds))
+                    {
+                        waitMs = retryAfterSeconds * 1000;
+                    }
+
+                    await Task.Delay(waitMs, cancellationToken);
+                    delayMs = Math.Min(delayMs * 2, maxDelayMs);
+                    continue;
+                }
+
+                // server errors
+                if ((int)response.StatusCode >= 500)
+                {
+                    if (attempt == maxRetries)
+                        break;
+
+                    await Task.Delay(delayMs, cancellationToken);
+                    delayMs = Math.Min(delayMs * 2, maxDelayMs);
+                    continue;
+                }
+
+                // client errors
+                var errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+                return $"AI API error ({response.StatusCode}): {errorBody}";
+            }
+            catch (TaskCanceledException) when (!cancellationToken.IsCancellationRequested)
+            {
+                // timeout
+                if (attempt == maxRetries)
+                    return "AI request timed out repeatedly.";
+
+                await Task.Delay(delayMs, cancellationToken);
+                delayMs = Math.Min(delayMs * 2, maxDelayMs);
+            }
+            catch (HttpRequestException ex)
+            {
+                // network issues
+                if (attempt == maxRetries)
+                    return $"Network error: {ex.Message}";
+
+                await Task.Delay(delayMs, cancellationToken);
+                delayMs = Math.Min(delayMs * 2, maxDelayMs);
+            }
+        }
+        
+        return "AI service is currently unavailable (rate limit or quota exceeded). Try again later.";
     }
 }
