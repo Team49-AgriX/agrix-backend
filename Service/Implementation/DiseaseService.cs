@@ -102,7 +102,7 @@ public class DiseaseService : IDiseaseService
         
         var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_geminiApiKey}";
 
-        const int maxRetries = 1;
+        const int maxRetries = 2;
         int delayMs = 5000;
         const int maxDelayMs = 30000;
 

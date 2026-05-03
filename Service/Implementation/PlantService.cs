@@ -76,8 +76,6 @@ public class PlantService : IPlantService
     
     public async Task<string> GetPlantInfoAsync(Plant plant, CancellationToken cancellationToken = default)
     {
-        Console.WriteLine("IdentifyAsync called");
-        
         var topResult = plant?.Results?.FirstOrDefault();
         if (topResult == null)
             return "Could not identify plant.";
@@ -110,9 +108,8 @@ public class PlantService : IPlantService
         };
 
         var url = $"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={_geminiApiKey}";
-
-        Console.WriteLine("USING GEMINI KEY: " + _geminiApiKey);
-        const int maxRetries = 1;
+        
+        const int maxRetries = 2;
         int delayMs = 5000;
         const int maxDelayMs = 30000;
 
