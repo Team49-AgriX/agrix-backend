@@ -1,4 +1,5 @@
 ﻿using Domain.Models.PlantID;
+using Domain.Models.Plants;
 using Web.Response.Plant_Response;
 
 namespace Web.Extensions;
@@ -64,6 +65,50 @@ public static class PlantExtensions
             plant.PreferedReferential,
             plant.BestMatch,
             plant.Results.Select(x => x.ToPlantResultResponse()).ToArray()
+        );
+    }
+
+    public static FruitResponse ToFruitResponse(this Fruit fruit) {
+        return new FruitResponse (
+            fruit.Id,
+            fruit.Name,
+            fruit.Description,
+            fruit.ImageUrl,
+            fruit.ScientificName,
+            fruit.Family,
+            fruit.Genus,
+            fruit.CommonNames,
+            fruit.OriginRegion,
+            fruit.AgroecologicalZones,
+            fruit.HarvestSeason,
+            fruit.CulinaryUses,
+            fruit.NutritionalInfo,
+            fruit.HasSeeds,
+            fruit.TasteProfile,
+            fruit.CreatedAt,
+            fruit.UpdatedAt
+        );
+    }
+
+    public static VegetableResponse ToVegetableResponse(this Vegetable vegetable) {
+        return new VegetableResponse (
+            vegetable.Id,
+            vegetable.Name,
+            vegetable.Description,
+            vegetable.ImageUrl,
+            vegetable.ScientificName,
+            vegetable.Family,
+            vegetable.Genus,
+            vegetable.CommonNames,
+            vegetable.OriginRegion,
+            vegetable.AgroecologicalZones,
+            vegetable.HarvestSeason,
+            vegetable.CulinaryUses,
+            vegetable.NutritionalInfo,
+            vegetable.EdiblePart,
+            vegetable.IsLeafy,
+            vegetable.CreatedAt,
+            vegetable.UpdatedAt
         );
     }
 }

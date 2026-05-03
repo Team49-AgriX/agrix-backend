@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Repository;
@@ -11,9 +12,11 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260502205702_fruitAndVegetableTables")]
+    partial class fruitAndVegetableTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -426,84 +429,6 @@ namespace Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Fruits", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AgroecologicalZones = new[] { "Temperate" },
-                            CommonNames = new[] { "Apple", "Red Apple" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Juice", "Pie" },
-                            Description = "A sweet red fruit",
-                            Family = "Rosaceae",
-                            Genus = "Malus",
-                            HarvestSeason = "Autumn",
-                            HasSeeds = true,
-                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg",
-                            Name = "Apple",
-                            NutritionalInfo = "Rich in fiber and vitamin C",
-                            OriginRegion = "Central Asia",
-                            ScientificName = "Malus domestica",
-                            TasteProfile = "Sweet"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AgroecologicalZones = new[] { "Tropical" },
-                            CommonNames = new[] { "Banana" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Smoothies", "Baking" },
-                            Description = "A tropical yellow fruit",
-                            Family = "Musaceae",
-                            Genus = "Musa",
-                            HarvestSeason = "Year-round",
-                            HasSeeds = false,
-                            ImageUrl = "",
-                            Name = "Banana",
-                            NutritionalInfo = "Rich in potassium and vitamin B6",
-                            OriginRegion = "Southeast Asia",
-                            ScientificName = "Musa acuminata",
-                            TasteProfile = "Sweet"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AgroecologicalZones = new[] { "Temperate" },
-                            CommonNames = new[] { "Strawberry" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Jam", "Desserts" },
-                            Description = "A small red sweet fruit",
-                            Family = "Rosaceae",
-                            Genus = "Fragaria",
-                            HarvestSeason = "Spring",
-                            HasSeeds = true,
-                            ImageUrl = "",
-                            Name = "Strawberry",
-                            NutritionalInfo = "Rich in vitamin C and antioxidants",
-                            OriginRegion = "Europe and Americas",
-                            ScientificName = "Fragaria ananassa",
-                            TasteProfile = "Sweet and Sour"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AgroecologicalZones = new[] { "Tropical", "Subtropical" },
-                            CommonNames = new[] { "Mango" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Juice", "Desserts" },
-                            Description = "A tropical stone fruit",
-                            Family = "Anacardiaceae",
-                            Genus = "Mangifera",
-                            HarvestSeason = "Summer",
-                            HasSeeds = true,
-                            ImageUrl = "",
-                            Name = "Mango",
-                            NutritionalInfo = "Rich in vitamin A and C",
-                            OriginRegion = "South Asia",
-                            ScientificName = "Mangifera indica",
-                            TasteProfile = "Sweet"
-                        });
                 });
 
             modelBuilder.Entity("Domain.Models.Plants.Vegetable", b =>
@@ -578,84 +503,6 @@ namespace Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vegetables", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            AgroecologicalZones = new[] { "Temperate" },
-                            CommonNames = new[] { "Carrot" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Cooked", "Soup" },
-                            Description = "An orange root vegetable",
-                            EdiblePart = "Root",
-                            Family = "Apiaceae",
-                            Genus = "Daucus",
-                            HarvestSeason = "Autumn",
-                            ImageUrl = "",
-                            IsLeafy = false,
-                            Name = "Carrot",
-                            NutritionalInfo = "Rich in beta-carotene and vitamin A",
-                            OriginRegion = "Central Asia",
-                            ScientificName = "Daucus carota"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            AgroecologicalZones = new[] { "Temperate" },
-                            CommonNames = new[] { "Spinach" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Cooked", "Salads" },
-                            Description = "A leafy green vegetable",
-                            EdiblePart = "Leaf",
-                            Family = "Amaranthaceae",
-                            Genus = "Spinacia",
-                            HarvestSeason = "Spring",
-                            ImageUrl = "",
-                            IsLeafy = true,
-                            Name = "Spinach",
-                            NutritionalInfo = "Rich in iron and vitamin K",
-                            OriginRegion = "Central and Western Asia",
-                            ScientificName = "Spinacia oleracea"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            AgroecologicalZones = new[] { "Temperate", "Tropical" },
-                            CommonNames = new[] { "Tomato" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Raw", "Sauce", "Salads" },
-                            Description = "A red fruit often used as a vegetable",
-                            EdiblePart = "Fruit",
-                            Family = "Solanaceae",
-                            Genus = "Solanum",
-                            HarvestSeason = "Summer",
-                            ImageUrl = "",
-                            IsLeafy = false,
-                            Name = "Tomato",
-                            NutritionalInfo = "Rich in lycopene and vitamin C",
-                            OriginRegion = "South America",
-                            ScientificName = "Solanum lycopersicum"
-                        },
-                        new
-                        {
-                            Id = 4,
-                            AgroecologicalZones = new[] { "Temperate" },
-                            CommonNames = new[] { "Broccoli" },
-                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CulinaryUses = new[] { "Cooked", "Steamed", "Stir-fry" },
-                            Description = "A green cruciferous vegetable",
-                            EdiblePart = "Flower head",
-                            Family = "Brassicaceae",
-                            Genus = "Brassica",
-                            HarvestSeason = "Autumn",
-                            ImageUrl = "",
-                            IsLeafy = false,
-                            Name = "Broccoli",
-                            NutritionalInfo = "Rich in vitamin C and K",
-                            OriginRegion = "Mediterranean",
-                            ScientificName = "Brassica oleracea"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
