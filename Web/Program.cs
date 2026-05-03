@@ -135,12 +135,16 @@ public class Program
         builder.Services.AddHttpClient<IPlantService, PlantService>();
         builder.Services.AddHttpClient<IDiseaseService, DiseaseService>();
         builder.Services.AddHttpClient<IApiService, ApiService>();
-        
+        builder.Services.AddScoped<IFruitService, FruitService>();
+        builder.Services.AddScoped<IVegetableService, VegetableService>();
+
         //Mappers
         builder.Services.AddScoped<PlantMapper>();
         builder.Services.AddScoped<DiseaseMapper>();
         builder.Services.AddScoped<ApiMapper>();
-            
+        builder.Services.AddScoped<FruitMapper>();
+        builder.Services.AddScoped<VegetableMapper>();
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
