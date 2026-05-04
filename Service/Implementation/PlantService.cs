@@ -18,17 +18,19 @@ public class PlantService : IPlantService
     private readonly string _apiKey;
     private const string BaseUrl = "https://my-api.plantnet.org/v2";
     private readonly string _geminiApiKey;
+    private readonly IHistoryService _historyService;
 
-    public PlantService(HttpClient httpClient, IConfiguration configuration)
+    public PlantService(HttpClient httpClient, IConfiguration configuration, IHistoryService historyService)
     {
         _httpClient = httpClient;
+        _historyService = historyService;
         _apiKey = configuration["PlantNet:ApiKey"] ??
                   throw new InvalidOperationException("PlantNet API key is not configured.");
         _geminiApiKey = configuration["Gemini:ApiKey"] ??
                         throw new InvalidOperationException("Gemini API key is not configured.");
     }
     
-    public async Task<string> IdentifyAsync(IFormFile[] images, Organ[] organs, PlantIdentificationDto queryDto)
+    public async Task<string> IdentifyAsync(string userId, IFormFile[] images, Organ[] organs, PlantIdentificationDto queryDto)
     {
         var organList = organs.Length == images.Length 
             ? organs 
@@ -71,7 +73,11 @@ public class PlantService : IPlantService
             PropertyNameCaseInsensitive = true
         });
 
-        return await GetPlantInfoAsync(result);
+        var plant = await GetPlantInfoAsync(result);
+        
+        await _historyService.SavePlantScanAsync(userId, plant);
+
+        return plant;
     }
     
     public async Task<string> GetPlantInfoAsync(Plant plant, CancellationToken cancellationToken = default)

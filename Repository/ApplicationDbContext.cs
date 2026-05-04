@@ -1,4 +1,6 @@
 ﻿using Domain.Models.DiseaseID;
+using Domain.Models.Favorites;
+using Domain.Models.History;
 using Domain.Models.Identity;
 using Domain.Models.PlantID;
 using Domain.Models.Plants;
@@ -13,6 +15,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Vegetable> Vegetables { get; set; }
     public DbSet<Plant> Plants { get; set; }
     public DbSet<Disease> Diseases { get; set; }
+    //History
+    public DbSet<PlantScanHistory> PlantScanHistories { get; set; }
+    public DbSet<DiseaseScanHistory> DiseaseScanHistories { get; set; }
+    //Favorite-Scans
+    public DbSet<PlantScanFavorites> PlantScanFavorites { get; set; }
+    public DbSet<DiseaseScanFavorites> DiseaseScanFavorites { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

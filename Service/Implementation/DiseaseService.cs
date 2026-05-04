@@ -18,17 +18,19 @@ public class DiseaseService : IDiseaseService
     private readonly string _apiKey;
     private const string BaseUrl = "https://my-api.plantnet.org/v2";
     private readonly string _geminiApiKey;
+    private readonly IHistoryService _historyService;
 
-    public DiseaseService(HttpClient httpClient, IConfiguration configuration)
+    public DiseaseService(HttpClient httpClient, IConfiguration configuration, IHistoryService historyService)
     {
         _httpClient = httpClient;
+        _historyService = historyService;
         _apiKey = configuration["PlantNet:ApiKey"] ??
                   throw new InvalidOperationException("PlantNet API key is not configured.");
         _geminiApiKey = configuration["Gemini:ApiKey"] ??
                         throw new InvalidOperationException("Gemini API key is not configured.");
     }
     
-    public async Task<string> IdentifyAsync(IFormFile[] images, Organ[] organs, DiseaseIdDto queryDto)
+    public async Task<string> IdentifyAsync(string userId, IFormFile[] images, Organ[] organs, DiseaseIdDto queryDto)
     {
         var organList = organs.Length == images.Length 
             ? organs 
@@ -69,7 +71,11 @@ public class DiseaseService : IDiseaseService
             PropertyNameCaseInsensitive = true
         });
 
-        return await GetDiseaseInfoAsync(result);
+        var disease = await GetDiseaseInfoAsync(result);
+
+        await _historyService.SaveDiseaseScanAsync(userId, disease);
+
+        return disease;
     }
 
     public async Task<string> GetDiseaseInfoAsync(Disease disease, CancellationToken cancellationToken = default)
