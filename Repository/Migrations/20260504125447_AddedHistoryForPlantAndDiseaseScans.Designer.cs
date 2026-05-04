@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Repository;
@@ -11,9 +12,11 @@ using Repository;
 namespace Repository.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260504125447_AddedHistoryForPlantAndDiseaseScans")]
+    partial class AddedHistoryForPlantAndDiseaseScans
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,60 +99,6 @@ namespace Repository.Migrations
                     b.HasIndex("DiseaseId");
 
                     b.ToTable("DiseaseResult");
-                });
-
-            modelBuilder.Entity("Domain.Models.Favorites.DiseaseScanFavorites", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantScanHistoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PlantScanId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("SavedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlantScanHistoryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("DiseaseScanFavorites");
-                });
-
-            modelBuilder.Entity("Domain.Models.Favorites.PlantScanFavorites", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid?>("PlantScanHistoryId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("PlantScanId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("SavedAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PlantScanHistoryId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("PlantScanFavorites");
                 });
 
             modelBuilder.Entity("Domain.Models.History.DiseaseScanHistory", b =>
@@ -904,36 +853,6 @@ namespace Repository.Migrations
                     b.HasOne("Domain.Models.DiseaseID.Disease", null)
                         .WithMany("Results")
                         .HasForeignKey("DiseaseId");
-                });
-
-            modelBuilder.Entity("Domain.Models.Favorites.DiseaseScanFavorites", b =>
-                {
-                    b.HasOne("Domain.Models.History.PlantScanHistory", "PlantScanHistory")
-                        .WithMany()
-                        .HasForeignKey("PlantScanHistoryId");
-
-                    b.HasOne("Domain.Models.Identity.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("PlantScanHistory");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Domain.Models.Favorites.PlantScanFavorites", b =>
-                {
-                    b.HasOne("Domain.Models.History.PlantScanHistory", "PlantScanHistory")
-                        .WithMany()
-                        .HasForeignKey("PlantScanHistoryId");
-
-                    b.HasOne("Domain.Models.Identity.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("PlantScanHistory");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.History.DiseaseScanHistory", b =>

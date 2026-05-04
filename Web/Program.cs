@@ -137,6 +137,8 @@ public class Program
         builder.Services.AddHttpClient<IApiService, ApiService>();
         builder.Services.AddScoped<IFruitService, FruitService>();
         builder.Services.AddScoped<IVegetableService, VegetableService>();
+        builder.Services.AddScoped<IHistoryService, HistoryService>();
+        builder.Services.AddScoped<IFavoriteService, FavoriteService>();
 
         //Mappers
         builder.Services.AddScoped<PlantMapper>();
@@ -144,6 +146,8 @@ public class Program
         builder.Services.AddScoped<ApiMapper>();
         builder.Services.AddScoped<FruitMapper>();
         builder.Services.AddScoped<VegetableMapper>();
+        builder.Services.AddScoped<HistoryMapper>();
+        builder.Services.AddScoped<FavoritesMapper>();
 
         var app = builder.Build();
 

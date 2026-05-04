@@ -7,6 +7,6 @@ namespace Service.Interface;
 
 public interface IDiseaseService
 {
-    Task<string> IdentifyAsync(IFormFile[] images, Organ[]organs, DiseaseIdDto queryDto);
+    Task<string> IdentifyAsync(string userId, IFormFile[] images, Organ[]organs, DiseaseIdDto queryDto);
     Task<string> GetDiseaseInfoAsync(Disease disease, CancellationToken cancellationToken);
 }

@@ -8,7 +8,7 @@ using Web.Request;
 namespace Web.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     public class VegetableController : ControllerBase
     {
