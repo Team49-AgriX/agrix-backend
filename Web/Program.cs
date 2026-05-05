@@ -1,6 +1,7 @@
 using Domain.Models.Identity;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Google.Cloud.Firestore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -27,6 +28,10 @@ public class Program
         {
             Credential = GoogleCredential.GetApplicationDefault()
         });
+        
+        // Firestore
+        var firestoreDb = FirestoreDb.Create(builder.Configuration["Firebase:ProjectId"]);
+        builder.Services.AddSingleton(firestoreDb);
         
         // Database
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -125,9 +130,6 @@ public class Program
             });
         });
         
-        // Swagger
-        
-        
         // Repository
         builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
@@ -139,6 +141,8 @@ public class Program
         builder.Services.AddScoped<IVegetableService, VegetableService>();
         builder.Services.AddScoped<IHistoryService, HistoryService>();
         builder.Services.AddScoped<IFavoriteService, FavoriteService>();
+        builder.Services.AddScoped<IProfileService, ProfileService>();
+        builder.Services.AddScoped<INotificationService, NotificationService>();
 
         //Mappers
         builder.Services.AddScoped<PlantMapper>();
@@ -156,7 +160,6 @@ public class Program
         {
             app.MapOpenApi();
             app.MapScalarApiReference();
-            // Swagger
         }
 
         app.UseHttpsRedirection();
