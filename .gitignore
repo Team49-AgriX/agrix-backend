@@ -3,7 +3,8 @@ obj/
 .user
 
 .env
-appsettings.json
+launchSettings.json
+appsettings.Development.json
 firebase-service-account.json
 
 .idea/
