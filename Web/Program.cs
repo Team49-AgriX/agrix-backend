@@ -29,12 +29,22 @@ public class Program
 
         Console.WriteLine($"Firebase JSON is null or empty: {string.IsNullOrEmpty(firebaseJson)}");
 
+        GoogleCredential credential;
+        if (!string.IsNullOrEmpty(firebaseJson))
+        {
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson));
+            credential = GoogleCredential.FromServiceAccountCredential(
+                Google.Apis.Auth.OAuth2.ServiceAccountCredential
+                    .FromServiceAccountData(stream));
+        }
+        else
+        {
+            credential = GoogleCredential.GetApplicationDefault();
+        }
+
         FirebaseApp.Create(new AppOptions
         {
-            Credential = string.IsNullOrEmpty(firebaseJson)
-                ? GoogleCredential.GetApplicationDefault()
-                : GoogleCredential.FromStream(
-                    new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson)))
+            Credential = credential
         });
         
         // Firestore
