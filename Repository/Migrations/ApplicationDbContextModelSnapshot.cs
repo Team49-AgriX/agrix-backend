@@ -98,6 +98,104 @@ namespace Repository.Migrations
                     b.ToTable("DiseaseResult");
                 });
 
+            modelBuilder.Entity("Domain.Models.Favorites.DiseaseScanFavorites", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PlantScanHistoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PlantScanId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("SavedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlantScanHistoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DiseaseScanFavorites");
+                });
+
+            modelBuilder.Entity("Domain.Models.Favorites.PlantScanFavorites", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid?>("PlantScanHistoryId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PlantScanId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("SavedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlantScanHistoryId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PlantScanFavorites");
+                });
+
+            modelBuilder.Entity("Domain.Models.History.DiseaseScanHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ResultText")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ScannedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("DiseaseScanHistories");
+                });
+
+            modelBuilder.Entity("Domain.Models.History.PlantScanHistory", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ResultText")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ScannedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PlantScanHistories");
+                });
+
             modelBuilder.Entity("Domain.Models.Identity.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -362,9 +460,39 @@ namespace Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.PrimitiveCollection<string[]>("AgroecologicalZones")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.PrimitiveCollection<string[]>("CommonNames")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.PrimitiveCollection<string[]>("CulinaryUses")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<string>("Family")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Genus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HarvestSeason")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("HasSeeds")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
@@ -374,9 +502,106 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NutritionalInfo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginRegion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScientificName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("TasteProfile")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Fruits");
+                    b.ToTable("Fruits", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AgroecologicalZones = new[] { "Temperate" },
+                            CommonNames = new[] { "Apple", "Red Apple" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Juice", "Pie" },
+                            Description = "A sweet red fruit",
+                            Family = "Rosaceae",
+                            Genus = "Malus",
+                            HarvestSeason = "Autumn",
+                            HasSeeds = true,
+                            ImageUrl = "https://upload.wikimedia.org/wikipedia/commons/1/15/Red_Apple.jpg",
+                            Name = "Apple",
+                            NutritionalInfo = "Rich in fiber and vitamin C",
+                            OriginRegion = "Central Asia",
+                            ScientificName = "Malus domestica",
+                            TasteProfile = "Sweet"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AgroecologicalZones = new[] { "Tropical" },
+                            CommonNames = new[] { "Banana" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Smoothies", "Baking" },
+                            Description = "A tropical yellow fruit",
+                            Family = "Musaceae",
+                            Genus = "Musa",
+                            HarvestSeason = "Year-round",
+                            HasSeeds = false,
+                            ImageUrl = "",
+                            Name = "Banana",
+                            NutritionalInfo = "Rich in potassium and vitamin B6",
+                            OriginRegion = "Southeast Asia",
+                            ScientificName = "Musa acuminata",
+                            TasteProfile = "Sweet"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AgroecologicalZones = new[] { "Temperate" },
+                            CommonNames = new[] { "Strawberry" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Jam", "Desserts" },
+                            Description = "A small red sweet fruit",
+                            Family = "Rosaceae",
+                            Genus = "Fragaria",
+                            HarvestSeason = "Spring",
+                            HasSeeds = true,
+                            ImageUrl = "",
+                            Name = "Strawberry",
+                            NutritionalInfo = "Rich in vitamin C and antioxidants",
+                            OriginRegion = "Europe and Americas",
+                            ScientificName = "Fragaria ananassa",
+                            TasteProfile = "Sweet and Sour"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AgroecologicalZones = new[] { "Tropical", "Subtropical" },
+                            CommonNames = new[] { "Mango" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Juice", "Desserts" },
+                            Description = "A tropical stone fruit",
+                            Family = "Anacardiaceae",
+                            Genus = "Mangifera",
+                            HarvestSeason = "Summer",
+                            HasSeeds = true,
+                            ImageUrl = "",
+                            Name = "Mango",
+                            NutritionalInfo = "Rich in vitamin A and C",
+                            OriginRegion = "South Asia",
+                            ScientificName = "Mangifera indica",
+                            TasteProfile = "Sweet"
+                        });
                 });
 
             modelBuilder.Entity("Domain.Models.Plants.Vegetable", b =>
@@ -387,7 +612,38 @@ namespace Repository.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.PrimitiveCollection<string[]>("AgroecologicalZones")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.PrimitiveCollection<string[]>("CommonNames")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.PrimitiveCollection<string[]>("CulinaryUses")
+                        .IsRequired()
+                        .HasColumnType("text[]");
+
                     b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EdiblePart")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Family")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Genus")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("HarvestSeason")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -395,13 +651,109 @@ namespace Repository.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<bool>("IsLeafy")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NutritionalInfo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("OriginRegion")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("ScientificName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Vegetables");
+                    b.ToTable("Vegetables", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            AgroecologicalZones = new[] { "Temperate" },
+                            CommonNames = new[] { "Carrot" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Cooked", "Soup" },
+                            Description = "An orange root vegetable",
+                            EdiblePart = "Root",
+                            Family = "Apiaceae",
+                            Genus = "Daucus",
+                            HarvestSeason = "Autumn",
+                            ImageUrl = "",
+                            IsLeafy = false,
+                            Name = "Carrot",
+                            NutritionalInfo = "Rich in beta-carotene and vitamin A",
+                            OriginRegion = "Central Asia",
+                            ScientificName = "Daucus carota"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            AgroecologicalZones = new[] { "Temperate" },
+                            CommonNames = new[] { "Spinach" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Cooked", "Salads" },
+                            Description = "A leafy green vegetable",
+                            EdiblePart = "Leaf",
+                            Family = "Amaranthaceae",
+                            Genus = "Spinacia",
+                            HarvestSeason = "Spring",
+                            ImageUrl = "",
+                            IsLeafy = true,
+                            Name = "Spinach",
+                            NutritionalInfo = "Rich in iron and vitamin K",
+                            OriginRegion = "Central and Western Asia",
+                            ScientificName = "Spinacia oleracea"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            AgroecologicalZones = new[] { "Temperate", "Tropical" },
+                            CommonNames = new[] { "Tomato" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Raw", "Sauce", "Salads" },
+                            Description = "A red fruit often used as a vegetable",
+                            EdiblePart = "Fruit",
+                            Family = "Solanaceae",
+                            Genus = "Solanum",
+                            HarvestSeason = "Summer",
+                            ImageUrl = "",
+                            IsLeafy = false,
+                            Name = "Tomato",
+                            NutritionalInfo = "Rich in lycopene and vitamin C",
+                            OriginRegion = "South America",
+                            ScientificName = "Solanum lycopersicum"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            AgroecologicalZones = new[] { "Temperate" },
+                            CommonNames = new[] { "Broccoli" },
+                            CreatedAt = new DateTime(2026, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CulinaryUses = new[] { "Cooked", "Steamed", "Stir-fry" },
+                            Description = "A green cruciferous vegetable",
+                            EdiblePart = "Flower head",
+                            Family = "Brassicaceae",
+                            Genus = "Brassica",
+                            HarvestSeason = "Autumn",
+                            ImageUrl = "",
+                            IsLeafy = false,
+                            Name = "Broccoli",
+                            NutritionalInfo = "Rich in vitamin C and K",
+                            OriginRegion = "Mediterranean",
+                            ScientificName = "Brassica oleracea"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -552,6 +904,54 @@ namespace Repository.Migrations
                     b.HasOne("Domain.Models.DiseaseID.Disease", null)
                         .WithMany("Results")
                         .HasForeignKey("DiseaseId");
+                });
+
+            modelBuilder.Entity("Domain.Models.Favorites.DiseaseScanFavorites", b =>
+                {
+                    b.HasOne("Domain.Models.History.PlantScanHistory", "PlantScanHistory")
+                        .WithMany()
+                        .HasForeignKey("PlantScanHistoryId");
+
+                    b.HasOne("Domain.Models.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("PlantScanHistory");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.Favorites.PlantScanFavorites", b =>
+                {
+                    b.HasOne("Domain.Models.History.PlantScanHistory", "PlantScanHistory")
+                        .WithMany()
+                        .HasForeignKey("PlantScanHistoryId");
+
+                    b.HasOne("Domain.Models.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("PlantScanHistory");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.History.DiseaseScanHistory", b =>
+                {
+                    b.HasOne("Domain.Models.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Models.History.PlantScanHistory", b =>
+                {
+                    b.HasOne("Domain.Models.Identity.AppUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Domain.Models.PlantID.Plant", b =>

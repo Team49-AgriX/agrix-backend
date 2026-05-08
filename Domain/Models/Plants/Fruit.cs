@@ -1,12 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿using Domain.Common;
 namespace Domain.Models.Plants;
 
-public class Fruit
+public class Fruit : PlantBase
 {
-    [Key]
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public string Description { get; set; }
-    public string ImageUrl { get; set; }
+    public bool HasSeeds { get; set; }
+    public string TasteProfile { get; set; } = string.Empty;
 }
