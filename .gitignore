@@ -11,3 +11,9 @@ firebase-service-account.json
 AgrixProject.sln.**
 
 *.log
+
+.dockerignore
+Dockerfile.local
+
+.DS_Store
+Thumbs.db
