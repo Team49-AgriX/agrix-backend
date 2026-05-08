@@ -27,18 +27,32 @@ public class Program
         // Firebase Admin SDK
         var firebaseJson = builder.Configuration["Firebase:ServiceAccountJson"];
 
-        Console.WriteLine($"Firebase JSON is null or empty: {string.IsNullOrEmpty(firebaseJson)}");
+        GoogleCredential credential;
+        if (!string.IsNullOrEmpty(firebaseJson))
+        {
+            var stream = new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson));
+            credential = GoogleCredential.FromServiceAccountCredential(
+                Google.Apis.Auth.OAuth2.ServiceAccountCredential
+                    .FromServiceAccountData(stream));
+        }
+        else
+        {
+            credential = GoogleCredential.GetApplicationDefault();
+        }
 
         FirebaseApp.Create(new AppOptions
         {
-            Credential = string.IsNullOrEmpty(firebaseJson)
-                ? GoogleCredential.GetApplicationDefault()
-                : GoogleCredential.FromStream(
-                    new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson)))
+            Credential = credential
         });
-        
-        // Firestore
-        var firestoreDb = FirestoreDb.Create(builder.Configuration["Firebase:ProjectId"]);
+
+        // Firestore - use the same credential
+        FirestoreDbBuilder firestoreBuilder = new FirestoreDbBuilder
+        {
+            ProjectId = builder.Configuration["Firebase:ProjectId"],
+            Credential = credential
+        };
+
+        var firestoreDb = firestoreBuilder.Build();
         builder.Services.AddSingleton(firestoreDb);
         
         // Frontend
