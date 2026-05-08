@@ -27,11 +27,13 @@ public class Program
         // Firebase Admin SDK
         var firebaseJson = builder.Configuration["Firebase:ServiceAccountJson"];
 
+        Console.WriteLine($"Firebase JSON is null or empty: {string.IsNullOrEmpty(firebaseJson)}");
+
         FirebaseApp.Create(new AppOptions
         {
             Credential = string.IsNullOrEmpty(firebaseJson)
-                ? GoogleCredential.GetApplicationDefault()  // local dev uses the JSON file
-                : GoogleCredential.FromStream(               // Render uses env variable
+                ? GoogleCredential.GetApplicationDefault()
+                : GoogleCredential.FromStream(
                     new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson)))
         });
         
@@ -164,7 +166,7 @@ public class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
+        if (!app.Environment.IsDevelopment())
         {
             app.MapOpenApi();
             app.MapScalarApiReference();
