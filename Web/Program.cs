@@ -1,3 +1,4 @@
+using System.Text;
 using Domain.Models.Identity;
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
@@ -24,14 +25,31 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
         
         // Firebase Admin SDK
+        var firebaseJson = builder.Configuration["Firebase:ServiceAccountJson"];
+
         FirebaseApp.Create(new AppOptions
         {
-            Credential = GoogleCredential.GetApplicationDefault()
+            Credential = string.IsNullOrEmpty(firebaseJson)
+                ? GoogleCredential.GetApplicationDefault()  // local dev uses the JSON file
+                : GoogleCredential.FromStream(               // Render uses env variable
+                    new MemoryStream(Encoding.UTF8.GetBytes(firebaseJson)))
         });
         
         // Firestore
         var firestoreDb = FirestoreDb.Create(builder.Configuration["Firebase:ProjectId"]);
         builder.Services.AddSingleton(firestoreDb);
+        
+        // Frontend
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy", policy =>
+            {
+                policy
+                    .AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+            });
+        });
         
         // Database
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -60,11 +78,6 @@ public class Program
                 };
                 options.Events = new JwtBearerEvents
                 {
-                    OnAuthenticationFailed = context =>
-                    {
-                        Console.WriteLine($"Auth failed: {context.Exception.Message}");
-                        return Task.CompletedTask;
-                    },
                     OnTokenValidated = async context =>
                     {
                         var uid = context.Principal?.FindFirst("user_id")?.Value;
@@ -97,11 +110,6 @@ public class Program
                             await userManager.AddLoginAsync(user,
                                 new UserLoginInfo("Firebase", uid, "Firebase"));
                         }
-                    },
-                    OnChallenge = context =>
-                    {
-                        Console.WriteLine($"OnChallange: {context.Error}, {context.ErrorDescription}");
-                        return Task.CompletedTask;
                     }
                 };
             });
@@ -163,7 +171,14 @@ public class Program
         }
 
         app.UseHttpsRedirection();
+        
+        app.UseExceptionHandler(appBuilder => appBuilder.Run(async context =>
+        {
+            context.Response.StatusCode = 500;
+            await context.Response.WriteAsJsonAsync(new { error = "An unexpected error occurred." });
+        }));
 
+        app.UseCors("FrontendPolicy");
         app.UseAuthentication();
         app.UseAuthorization();
         app.MapControllers();
